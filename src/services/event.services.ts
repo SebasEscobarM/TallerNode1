@@ -3,11 +3,12 @@ import EventModel, { EventDocument, EventInput } from "../models/event.models";
 
 class EventService {
 
-    public  async createEvent(eventInput: EventInput): Promise<EventDocument> {
+    public  async createEvent(eventInput: EventInput, organizador: string): Promise<EventDocument> {
 
         try {
 
             const event = await EventModel.create(eventInput);
+            event.organizador = organizador;
             return event;
 
         } catch (error) {
@@ -17,8 +18,6 @@ class EventService {
         }
 
     }
-
-    //No se si el update sería así por los usuario suscritos
 
     public async updateEvent(id: string, eventInput: EventInput): Promise<EventDocument | null> {
 

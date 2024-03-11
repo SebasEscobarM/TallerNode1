@@ -17,7 +17,7 @@ class eventController {
 
             }
 
-            const event: EventDocument = await  eventServices.createEvent(req.body as EventInput);
+            const event: EventDocument = await  eventServices.createEvent(req.body as EventInput, req.body.organizador);
 
             return res.status(201).json(event);
 
@@ -170,9 +170,11 @@ class eventController {
 
         }
       
-        event.asistentes.push(req.body.usuarioId);
+        event.asistentes.push(req.body.userId);
 
         await event.save();
+
+        return res.status(200).json(event);
         
     }
       
@@ -185,18 +187,24 @@ class eventController {
           throw new Error("Event not found");
 
         }
-      
-        const attendeeIndex = event.asistentes.indexOf(req.body.usuarioId);
 
-        if (attendeeIndex === -1) {
+        let toSave: string[] = [];
+        
+        for (let i in event.asistentes) {
 
-          throw new Error("Attendee not found");
+            if (req.body.userId !== event.asistentes[i]) {
+
+                toSave.push(event.asistentes[i]);
+
+            }
 
         }
-      
-        event.asistentes.splice(attendeeIndex, 1);
+
+        event.asistentes = toSave;
 
         await event.save();
+
+        return res.status(200).json(event);
 
     }
 
