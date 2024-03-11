@@ -190,21 +190,20 @@ class eventController {
 
         let toSave: string[] = [];
         
-        for (let i in event.asistentes) {
-
-            if (req.body.userId !== event.asistentes[i]) {
+        for (let i in event.asistentes) {  
+            if (req.body.loggedUser.user_id !== event.asistentes[i]) {
 
                 toSave.push(event.asistentes[i]);
 
             }
 
         }
+        console.log(toSave);
+        var nwE = event;
+        nwE.asistentes=toSave;
+        await event.updateOne(nwE);
 
-        event.asistentes = toSave;
-
-        await event.save();
-
-        return res.status(200).json(event);
+        return res.status(200).json(nwE);
 
     }
 
